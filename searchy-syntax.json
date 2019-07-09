@@ -1,6 +1,6 @@
 {
   "name": "Searchy",
-  "scopeName": "source.searchy",
+  "scopeName": "source.searchy-fuzzy",
   "patterns": [{
     "name": "comment.line.file",
     "match": "file:.*$"
