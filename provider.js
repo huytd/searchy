@@ -100,16 +100,23 @@ ${resultsForFile}`
     const col = parseInt(column, 10)
     const preamble = `  ${line}:`.length
     const match = formattedLine.result.match(cmd)
-    if (match == null) {
-      return
+    let linkRange;
+    if (match) {
+      const searchTerm = match[0].length
+      linkRange = new vscode.Range(
+        lineNumber,
+        preamble + col,
+        lineNumber,
+        preamble + col + searchTerm
+      )
+    } else {
+      linkRange = new vscode.Range(
+        lineNumber,
+        2,
+        lineNumber,
+        preamble
+      )
     }
-    const searchTerm = match[0].length
-    const linkRange = new vscode.Range(
-      lineNumber,
-      preamble + col,
-      lineNumber,
-      preamble + col + searchTerm
-    )
     const uri = vscode.Uri.parse(`file://${rootPath}/${file}#${line}`)
     this.links[docURI].push(new vscode.DocumentLink(linkRange, uri))
   }
@@ -136,5 +143,5 @@ function openLink(fileName, line) {
 
 function runCommandSync(cmd) {
   let cleanedCommand = cmd.replace(/"/g, "\\\"").replace(/\s/g, ".*?")
-  return execSync(`${rgPath} --smart-case --line-number --column --hidden -e ${cleanedCommand}`, execOpts)
+  return execSync(`${rgPath} --glob="!.git" --smart-case --line-number --column --hidden -e ${cleanedCommand}`, execOpts)
 }
