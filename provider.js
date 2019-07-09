@@ -6,10 +6,24 @@ const {
 } = require('child_process')
 
 const rootPath = vscode.workspace.rootPath
+const MAX_DISPLAY_LINE_LENGTH = 128
 
 const execOpts = {
   cwd: rootPath,
   maxBuffer: 1024 * 1000
+}
+
+function processCommand(cmd) {
+  return cmd.replace(/"/g, "\\\"").replace(/\s/g, ".*?")
+}
+
+function trimResult(text, foundPosition, cmd) {
+  const padding = MAX_DISPLAY_LINE_LENGTH / 8
+  const padBack = foundPosition - padding
+  const padForw = foundPosition + cmd.length + padding
+  const start = padBack < 0 ? 0 : padBack
+  const end = padForw > text.length ? text.length : padForw
+  return text.substr(start, end)
 }
 
 class SearchyProvider {
@@ -73,6 +87,10 @@ class SearchyProvider {
       lineNumber += 1
       let resultsForFile = resultsByFile[fileName].map((searchResult, index) => {
         lineNumber += 1
+        const text = searchResult.result;
+        const foundPosition = text.search(new RegExp(processCommand(cmd)))
+        searchResult.result = text.length <= MAX_DISPLAY_LINE_LENGTH
+          ? text : trimResult(text, foundPosition, cmd)
         this.createDocumentLink(searchResult, lineNumber, cmd, uriString)
         return `  ${searchResult.line}: ${searchResult.result}`
       }).join('\n')
@@ -99,26 +117,25 @@ ${resultsForFile}`
     } = formattedLine
     const col = parseInt(column, 10)
     const preamble = `  ${line}:`.length
-    const match = formattedLine.result.match(cmd)
-    let linkRange;
-    if (match) {
-      const searchTerm = match[0].length
-      linkRange = new vscode.Range(
-        lineNumber,
-        preamble + col,
-        lineNumber,
-        preamble + col + searchTerm
-      )
-    } else {
-      linkRange = new vscode.Range(
-        lineNumber,
-        2,
-        lineNumber,
-        preamble
-      )
-    }
+    let cmdRegEx = new RegExp(processCommand(cmd))
+    const match = formattedLine.result.match(cmdRegEx)
+    const search = formattedLine.result.search(cmdRegEx)
     const uri = vscode.Uri.parse(`file://${rootPath}/${file}#${line}`)
-    this.links[docURI].push(new vscode.DocumentLink(linkRange, uri))
+    if (search !== -1) {
+      const searchTerm = match[0].length
+      this.links[docURI].push(new vscode.DocumentLink(new vscode.Range(
+        lineNumber,
+        preamble + search + 1,
+        lineNumber,
+        preamble + search + 1 + searchTerm
+      ), uri))
+    }
+    this.links[docURI].push(new vscode.DocumentLink(new vscode.Range(
+      lineNumber,
+      2,
+      lineNumber,
+      preamble
+    ), uri))
   }
 }
 
@@ -142,6 +159,6 @@ function openLink(fileName, line) {
 }
 
 function runCommandSync(cmd) {
-  let cleanedCommand = cmd.replace(/"/g, "\\\"").replace(/\s/g, ".*?")
+  let cleanedCommand = processCommand(cmd)
   return execSync(`${rgPath} --glob="!.git" --smart-case --line-number --column --hidden -e ${cleanedCommand}`, execOpts)
 }
