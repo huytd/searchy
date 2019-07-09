@@ -1,10 +1,10 @@
 {
-    "name": "searchy",
-    "displayName": "Searchy",
-    "description": "Dumb search with results in a new document",
-    "version": "0.0.2",
-    "publisher": "malkomalko",
-    "repository": "malkomalko/searchy",
+    "name": "searchy-fuzzy",
+    "displayName": "Searchy-fuzzy",
+    "description": "Dumb fuzzy search with results in a new document",
+    "version": "0.0.1",
+    "publisher": "huytd",
+    "repository": "huytd/searchy",
     "engines": {
         "vscode": "^1.16.0"
     },
@@ -12,27 +12,27 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:searchy.search"
+        "onCommand:searchy.search-fuzzy"
     ],
     "main": "./extension",
     "contributes": {
         "commands": [{
-            "command": "searchy.search",
-            "title": "Searchy - Search"
+            "command": "searchy.search-fuzzy",
+            "title": "Searchy - Search Fuzzy"
         }],
         "languages": [{
-            "id": "searchy",
+            "id": "searchy-fuzzy",
             "aliases": [
-                "Searchy"
+                "Searchy Fuzzy"
             ],
             "extensions": [
-                ".searchy"
+                ".searchy-fuzzy"
             ]
         }],
         "grammars": [{
-            "language": "searchy",
-            "path": "./searchy-syntax.json",
-            "scopeName": "source.searchy"
+            "language": "searchy-fuzzy",
+            "path": "./searchy-fuzzy-syntax.json",
+            "scopeName": "source.searchy-fuzzy"
         }]
     },
     "scripts": {
@@ -48,6 +48,6 @@
         "@types/mocha": "^2.2.42"
     },
     "dependencies": {
-        "vscode-ripgrep": "0.0.26"
+        "vscode-ripgrep": "^1.0.0"
     }
 }

@@ -1,25 +1,9 @@
-# searchy README
+# searchy-fuzzy
 
-Use ripgrep to pop open search results in new read only document.
+A fork from [malkomalko/searchy](https://github.com/malkomalko/searchy), with some enhancement for more flexibility.
+
+![](screenshot.png)
 
 ## Commands
 
-* `searchy.search` (Searchy - Search) - Pop open a dialog to ask for search term, and open the results in a nice read only document.  This uses ripgrep.
-
-## Requirements
-
-N/A
-
-## Known Issues
-
-N/A
-
-## Release Notes
-
-### 0.0.2
-
-Search hidden files by default
-
-### 0.0.1
-
-Initial release
+* `searchy.search-fuzzy` (Searchy - Search Fuzzy) - Pop open a dialog to ask for search term, and open the results in a nice read only document.  This uses ripgrep.

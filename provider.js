@@ -81,7 +81,7 @@ class SearchyProvider {
 file://${rootPath}/${fileName}
 ${resultsForFile}`
     })
-    let header = [`${resultsArray.length} search results found`]
+    let header = [`${resultsArray.length} search results found for "${cmd}"`]
     let content = header.concat(lines)
 
     return content.join('\n')
@@ -135,6 +135,6 @@ function openLink(fileName, line) {
 }
 
 function runCommandSync(cmd) {
-  let cleanedCommand = cmd.replace(/"/g, "\\\"")
-  return execSync(`${rgPath} --case-sensitive --line-number --column --hidden -e "${cleanedCommand}"`, execOpts)
+  let cleanedCommand = cmd.replace(/"/g, "\\\"").replace(/\s/g, ".*?")
+  return execSync(`${rgPath} --smart-case --line-number --column --hidden -e ${cleanedCommand}`, execOpts)
 }

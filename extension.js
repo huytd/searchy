@@ -19,7 +19,7 @@ function activate(context) {
     }, provider)
   )
 
-  const disposable = commands.registerCommand('searchy.search', function () {
+  const disposable = commands.registerCommand('searchy.search-fuzzy', function () {
     window.showInputBox({
       value: null,
       prompt: null,
