@@ -2,7 +2,7 @@
     "name": "searchy-fuzzy",
     "displayName": "Searchy-fuzzy",
     "description": "Dumb fuzzy search with results in a new document",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "publisher": "huytd",
     "repository": "https://github.com/huytd/searchy",
     "engines": {

@@ -117,7 +117,7 @@ ${resultsForFile}`
     } = formattedLine
     const col = parseInt(column, 10)
     const preamble = `  ${line}:`.length
-    let cmdRegEx = new RegExp(processCommand(cmd))
+    let cmdRegEx = new RegExp(processCommand(cmd), "ig")
     const match = formattedLine.result.match(cmdRegEx)
     const search = formattedLine.result.search(cmdRegEx)
     const uri = vscode.Uri.parse(`file://${rootPath}/${file}#${line}`)
